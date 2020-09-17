@@ -14,7 +14,6 @@ def convolution(image, kernel):
     '''
     # rotate kernel by 180 degree
     kernel = np.rot90(kernel, k=2)
-    print(kernel)
     return filter2d(image, kernel)
 
 
@@ -70,14 +69,22 @@ def filter2d(image, kernel):
 
 
 def zero_crossings(image, threshold):
+    '''
+    Parameters
+    ----------
+    image : grey scale image
+    threshold : scalar value
+    
+    Returns
+    -------
+    output_image : ndarray
+    '''
     x, y = image.shape
     output_image = np.zeros_like(image)
     for i in range(1, x-1):
         for j in range(1, y-1):
-            # left right
             if opp_sign(image[i][j-1], image[i][j+1]):
                 if abs(image[i][j-1] - image[i][j+1]) > threshold:
-                    #print(abs(image[i][j-1]-image[i][j+1]))
                     #image[i][j] = 0
                     continue
 
@@ -97,12 +104,15 @@ def zero_crossings(image, threshold):
                     continue
 
             output_image[i][j] = 255
-
     return output_image
 
 
 def opp_sign(x, y):
-    True if (x<0 and y>0) or (x>0 and y<0) else False
+    return True if ((x<0 and y>0) or (x>0 and y<0)) else False
+
+
+def normalize(image):
+    return image / np.max(image) * 255
 
 
 def _test_case():

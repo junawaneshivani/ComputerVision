@@ -13,7 +13,7 @@ def prewitt_operator(image):
                         [0, 0, 0],
                         [-1, -1, -1]])
     h_edges = functions.convolution(image, kernel=h_mask)
-    output = np.sqrt(v_edges**2 + h_edges**2)
+    output = np.hypot(v_edges, h_edges)
 
     threshold = np.absolute(output).mean() * 1.5
     output[output <= threshold] = 255
@@ -30,7 +30,7 @@ def sobel_operator(image):
                         [0, 0, 0],
                         [-1, -2, -1]])
     h_edges = functions.convolution(image, kernel=h_mask)
-    output = np.sqrt(v_edges**2 + h_edges**2)
+    output = np.hypot(v_edges, h_edges)
 
     threshold = np.absolute(output).mean() * 1.5
     output[output <= threshold] = 255
@@ -46,8 +46,8 @@ def marr_hildreth(image):
                         [ 0, 1,   2, 1, 0],
                         [ 0, 0,   1, 0, 0] ])   
     output = functions.convolution(image, kernel=mask)
-    max_value = np.max(output)
-    threshold = 0.15 * max_value
+    threshold = np.max(output) * 0.15
+    print(threshold)
     # TODO: Find zero crossings
     # TODO: Threshold the zero-crossings to keep only those strong ones 
     output = functions.zero_crossings(output, threshold)
@@ -69,13 +69,12 @@ def _test_case():
     output_image = prewitt_operator(image)
     plt.subplot(2, 3, 2).set_title("prewitt")
     plt.imshow(output_image, cmap="gray")
-    #print(output_image)
     output_image = sobel_operator(image)
     plt.subplot(2, 3, 3).set_title("sobel")
     plt.imshow(output_image, cmap="gray")
     output_image = marr_hildreth(image)
-    plt.subplot(2, 3, 5).set_title("marr hildreth")
-    plt.imshow(output_image, cmap=plt.cm.gray)
+    plt.subplot(2, 3, 4).set_title("marr hildreth")
+    plt.imshow(output_image, cmap="gray")
     plt.show()
 
 if __name__ == "__main__":
